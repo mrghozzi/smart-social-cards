@@ -55,8 +55,9 @@ if (!function_exists('smart_social_cards_service')) {
 }
 
 // ─── 3. Register Views & Translations ──────────────────────────────────────────
-View::addNamespace('smart-social-cards', __DIR__ . '/views');
-app('translator')->addNamespace('smart_social_cards', __DIR__ . '/lang');
+if (function_exists('app') && app()->bound('view') && app()->bound('router')) {
+    View::addNamespace('smart-social-cards', __DIR__ . '/views');
+    app('translator')->addNamespace('smart_social_cards', __DIR__ . '/lang');
 
 // ─── 4. Admin Sidebar Hook ─────────────────────────────────────────────────────
 Hooks::add_action('admin_sidebar_menu', function (): void {
@@ -125,3 +126,5 @@ Route::middleware(['web', 'auth', 'admin'])->group(function () {
     Route::post('/admin/smart-social-cards/settings', [AdminSocialCardsController::class, 'saveSettings'])->name('admin.smart_social_cards.settings');
     Route::post('/admin/smart-social-cards/clear-cache', [AdminSocialCardsController::class, 'clearCache'])->name('admin.smart_social_cards.clear_cache');
 });
+}
+
