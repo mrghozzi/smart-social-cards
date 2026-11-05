@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.1.0] - 2026-11-05
+
+### Added / Enhanced
+- **Full Compatibility with MYADS v4.7.0 & Laravel 12:**
+  - Tested and validated OpenGraph cards generation under Dual DocumentRoot environments and zero-trust CSP headers.
+  - Bumped `max_myads` requirement to `4.7.x`.
+  - Maintained high-performance tiered caching, GD font shaper, and .superdesign admin preview simulator.
+
 ## [1.0.0] - 2026-09-16
 
 ### Added
