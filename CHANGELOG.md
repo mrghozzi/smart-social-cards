@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.2.0] - 2026-11-11
+
+### Added / Enhanced
+- **Community Groups Dynamic OpenGraph Cards Support:**
+  - Added `/og-image/group/{idOrSlug}` endpoint to generate 1200x630 cards for community groups.
+  - Automatically renders group name, localized category badge (`GROUP: CATEGORY`), member and post count statistics, and group description.
+  - Generates immutable ETag cached preview cards for social media platforms.
+
 ## [1.1.0] - 2026-11-05
 
 ### Added / Enhanced

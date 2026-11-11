@@ -95,6 +95,7 @@ class OgImageController extends Controller
             'news' => $this->resolveNewsPayload($id),
             'directory' => $this->resolveDirectoryPayload($id),
             'page' => $this->resolvePagePayload($id),
+            'group' => $this->resolveGroupPayload($id),
             default => [
                 'title' => $request->input('title', 'MyAds Community'),
                 'category' => strtoupper($type),
@@ -261,6 +262,40 @@ class OgImageController extends Controller
             'stats' => '',
             'subtitle' => '',
             'updated_at' => (string) ($page->updated_at?->timestamp ?? '1'),
+        ];
+    }
+
+    protected function resolveGroupPayload(string $idOrSlug): array
+    {
+        $group = null;
+        if (class_exists(\App\Models\Group::class)) {
+            $group = \App\Models\Group::with(['owner'])
+                ->where('slug', $idOrSlug)
+                ->orWhere('id', is_numeric($idOrSlug) ? (int) $idOrSlug : 0)
+                ->first();
+        }
+
+        if (!$group) {
+            return [
+                'title' => 'Community Group: ' . str_replace('-', ' ', $idOrSlug),
+                'category' => 'COMMUNITY GROUP',
+                'author' => 'Community',
+                'stats' => '',
+                'subtitle' => 'Join the discussion on MyAds Groups',
+                'updated_at' => '1',
+            ];
+        }
+
+        $categoryLabel = class_exists(\App\Models\Group::class) ? \App\Models\Group::categoryLabel($group->category) : 'COMMUNITY';
+        $stats = $group->members_count . ' members • ' . $group->posts_count . ' posts';
+
+        return [
+            'title' => (string) $group->name,
+            'category' => 'GROUP: ' . strtoupper($categoryLabel),
+            'author' => $group->owner?->username ?? 'Community',
+            'stats' => $stats,
+            'subtitle' => !empty($group->short_description) ? $group->short_description : (string) ($group->description ?? ''),
+            'updated_at' => (string) ($group->updated_at?->timestamp ?? '1'),
         ];
     }
 }

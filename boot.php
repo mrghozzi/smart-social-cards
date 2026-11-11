@@ -116,7 +116,7 @@ View::composer('theme::layouts.master', function ($view): void {
 // ─── 6. Public Image Delivery Routes ───────────────────────────────────────────
 Route::get('/og-image/preview', [OgImageController::class, 'preview'])->name('og_image.preview');
 Route::get('/og-image/{type}/{id}', [OgImageController::class, 'show'])
-    ->where('type', 'topic|product|video|news|directory|page')
+    ->where('type', 'topic|product|video|news|directory|page|group')
     ->where('id', '[a-zA-Z0-9_\-\.\%]+')
     ->name('og_image.show');
 
