@@ -62,23 +62,29 @@ class OgImageController extends Controller
      */
     public function preview(Request $request): Response
     {
+        $theme = strtolower(trim((string) $request->input('theme', 'midnight')));
+        if (!in_array($theme, ['midnight', 'cyberpunk', 'sunset', 'brand'], true)) {
+            $theme = 'midnight';
+        }
+
         $payload = [
-            'title' => $request->input('title', 'Smart Social OG Cards for MYADS'),
-            'category' => $request->input('category', 'FORUM TOPIC'),
-            'author' => $request->input('author', 'mrghozzi'),
+            'title' => (string) $request->input('title', 'Smart Social OG Cards for MYADS'),
+            'category' => (string) $request->input('category', 'FORUM TOPIC'),
+            'author' => (string) $request->input('author', 'mrghozzi'),
             'price' => $request->input('price', null),
-            'stats' => $request->input('stats', '14 replies • 520 views'),
-            'subtitle' => $request->input('subtitle', 'Dynamic high-resolution OpenGraph cards generator.'),
-            'theme' => $request->input('theme', 'midnight'),
+            'stats' => (string) $request->input('stats', '14 replies • 520 views'),
+            'subtitle' => (string) $request->input('subtitle', 'Dynamic high-resolution OpenGraph cards generator.'),
+            'theme' => $theme,
         ];
 
         $imagePath = $this->cardService->renderCard($payload, null);
 
         $content = file_get_contents($imagePath);
-        @unlink($imagePath); // Don't persist temporary preview images
+        $this->cardService->deleteTemporaryCard($imagePath);
 
         return response($content, 200, [
             'Content-Type' => 'image/png',
+            'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
         ]);
     }

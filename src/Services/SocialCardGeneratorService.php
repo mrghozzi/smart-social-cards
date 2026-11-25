@@ -477,6 +477,26 @@ class SocialCardGeneratorService
     }
 
     /**
+     * Safely remove a temporary generated card strictly inside the cache directory.
+     */
+    public function deleteTemporaryCard(string $filePath): bool
+    {
+        $realCacheDir = realpath($this->cacheDir);
+        $realFile = realpath($filePath);
+        if ($realCacheDir === false || $realFile === false || !is_file($realFile)) {
+            return false;
+        }
+
+        $normalizedDir = rtrim(str_replace('\\', '/', strtolower($realCacheDir)), '/') . '/';
+        $normalizedFile = str_replace('\\', '/', strtolower($realFile));
+        if (!str_starts_with($normalizedFile, $normalizedDir) || strtolower(pathinfo($realFile, PATHINFO_EXTENSION)) !== 'png') {
+            return false;
+        }
+
+        return @unlink($realFile);
+    }
+
+    /**
      * Clear all cached social cards.
      */
     public function clearCache(): int
@@ -486,7 +506,7 @@ class SocialCardGeneratorService
             $files = glob($this->cacheDir . '/*.png');
             if ($files) {
                 foreach ($files as $file) {
-                    if (unlink($file)) {
+                    if ($this->deleteTemporaryCard((string) $file)) {
                         $count++;
                     }
                 }

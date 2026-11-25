@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.2.1] - 2026-11-26
+
+### Security
+- **Cache Deletion Containment, Theme Whitelisting & Throttling (`OgImageController`, `SocialCardGeneratorService`, `boot.php`)**: Added canonical cache-directory containment (`deleteTemporaryCard`) before file unlinking, enforced strict preview theme allowlisting, added `X-Content-Type-Options: nosniff`, and added `throttle:60,1` middleware to public `/og-image/*` routes.
+
 ## [1.2.0] - 2026-11-11
 
 ### Added / Enhanced

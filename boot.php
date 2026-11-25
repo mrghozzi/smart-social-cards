@@ -114,11 +114,13 @@ View::composer('theme::layouts.master', function ($view): void {
 });
 
 // ─── 6. Public Image Delivery Routes ───────────────────────────────────────────
-Route::get('/og-image/preview', [OgImageController::class, 'preview'])->name('og_image.preview');
-Route::get('/og-image/{type}/{id}', [OgImageController::class, 'show'])
-    ->where('type', 'topic|product|video|news|directory|page|group')
-    ->where('id', '[a-zA-Z0-9_\-\.\%]+')
-    ->name('og_image.show');
+Route::middleware(['web', 'throttle:60,1'])->group(function (): void {
+    Route::get('/og-image/preview', [OgImageController::class, 'preview'])->name('og_image.preview');
+    Route::get('/og-image/{type}/{id}', [OgImageController::class, 'show'])
+        ->where('type', 'topic|product|video|news|directory|page|group')
+        ->where('id', '[a-zA-Z0-9_\-\.\%]+')
+        ->name('og_image.show');
+});
 
 // ─── 7. Admin Routes ───────────────────────────────────────────────────────────
 Route::middleware(['web', 'auth', 'admin'])->group(function () {
